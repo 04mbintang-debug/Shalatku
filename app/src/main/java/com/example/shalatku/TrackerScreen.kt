@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -18,6 +19,7 @@ fun TrackerScreen(
     prayers: List<Prayer>,
     donePrayers: List<String>,
     onToggle: (String) -> Unit,
+    onClear: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(modifier.padding(16.dp)) {
@@ -35,6 +37,10 @@ fun TrackerScreen(
                 )
                 Text(prayer.name, style = MaterialTheme.typography.titleMedium)
             }
+        }
+        Spacer(Modifier.height(16.dp))
+        OutlinedButton(onClick = onClear) {
+            Text("Clear all")
         }
     }
 }
