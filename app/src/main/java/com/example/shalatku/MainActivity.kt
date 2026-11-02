@@ -9,17 +9,11 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Home
-import androidx.compose.material3.Icon
-import androidx.compose.material3.NavigationBar
-import androidx.compose.material3.NavigationBarItem
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.shalatku.ui.theme.ShalatkuTheme
 
@@ -37,6 +31,7 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun ShalatkuApp(viewModel: SalatKuViewModel = viewModel()) {
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     var selected by rememberSaveable { mutableIntStateOf(0) }
 
     Scaffold(
@@ -66,25 +61,26 @@ fun ShalatkuApp(viewModel: SalatKuViewModel = viewModel()) {
         val contentModifier = Modifier.padding(innerPadding)
         when (selected) {
             0 -> HomeScreen(
-                prayers = samplePrayers,
-                selectedDay = viewModel.selectedDay,
-                onSelectDay = viewModel::selectDay,
+                prayers = uiState.prayers,
+                prayerTimes = uiState.prayerTimes,
+                onRefreshPrayerTimes = viewModel::loadPrayerTimes,
                 modifier = contentModifier
             )
             1 -> TrackerScreen(
-                prayers = samplePrayers,
-                donePrayers = viewModel.donePrayers,
+                prayers = uiState.prayers,
+                donePrayers = uiState.donePrayers,
+                doneCount = uiState.doneCount,
                 onToggle = viewModel::togglePrayer,
                 onClear = viewModel::clearPrayers,
                 modifier = contentModifier
             )
             2 -> TasbihScreen(
-                count = viewModel.tasbihCount,
-                rounds = viewModel.completedRounds,
-                roundSize = viewModel.roundSize,
+                count = uiState.tasbihCount,
+                rounds = uiState.completedRounds,
+                roundSize = uiState.roundSize,
                 onIncrement = viewModel::incrementTasbih,
                 onReset = viewModel::resetTasbih,
-                onSelectRoundSize = viewModel::updateRoundSize,
+                onSelectRoundSize = viewModel::setRoundSize,
                 modifier = contentModifier
             )
         }

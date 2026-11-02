@@ -1,16 +1,7 @@
 package com.example.shalatku
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Card
-import androidx.compose.material3.FilterChip
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
+import androidx.compose.foundation.layout.*
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -19,37 +10,34 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun HomeScreen(
     prayers: List<Prayer>,
-    selectedDay: Int = 0,
-    onSelectDay: (Int) -> Unit = {},
+    prayerTimes: PrayerTimesUiState = PrayerTimesUiState.Success(prayers),
+    onRefreshPrayerTimes: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
-    val days = listOf("Mon", "Tue", "Wed", "Thu", "Fri")
 
     Column(modifier.padding(16.dp)) {
         Text("Shalatku", style = MaterialTheme.typography.headlineMedium)
         Text("Today's prayer times", style = MaterialTheme.typography.bodyMedium)
-        Spacer(Modifier.height(8.dp))
-
-        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            days.forEachIndexed { index, day ->
-                FilterChip(
-                    selected = selectedDay == index,
-                    onClick = { onSelectDay(index) },
-                    label = { Text(day) }
-                )
-            }
-        }
-
+        
         Spacer(Modifier.height(16.dp))
-        prayers.forEach { prayer -> PrayerCard(prayer) }
+        PrayerTimesSection(state = prayerTimes, onRefresh = onRefreshPrayerTimes)
     }
 }
 
 @Composable
 fun PrayerCard(prayer: Prayer) {
-    Card(Modifier.fillMaxWidth().padding(vertical = 4.dp)) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 4.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surfaceVariant
+        )
+    ) {
         Row(
-            Modifier.fillMaxWidth().padding(16.dp),
+            Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
